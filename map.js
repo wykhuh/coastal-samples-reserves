@@ -45,14 +45,16 @@
   }).addTo(mymap);
 
   window.demomap.sample_sites.forEach(point => {
-    var circle = L.circle([point[1], point[2]], {
+    var circle = L.circle([point[0], point[1]], {
       color: "red",
       fillColor: "#f03",
       fillOpacity: 0.5,
-      radius: 10
+      radius: 40
     }).addTo(mymap);
     circle.bindPopup(
-      `<b>Sample:</b> ${point[0]}<br><b>Lat, Long:</b> ${point[1]}, ${point[2]}`
+      `<b>Sample:</b> ${point[2]}<br>
+       <b>Location:</b> ${point[3]}<br>
+       <b>Lat, Long:</b> ${point[0]}, ${point[1]}`
     );
   });
 
