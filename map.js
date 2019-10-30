@@ -13,6 +13,26 @@
     "Scripps_Boundary_27" // 5 samples
   ];
 
+  function onEachFeatureHandler(feature, layer) {
+    var name =
+      feature.properties.Name ||
+      feature.properties.NAME ||
+      feature.properties.UNIT_NAME;
+    var campus =
+      feature.properties.Campus ||
+      feature.properties.CAMPUS ||
+      feature.properties.AGNCY_NAME;
+    if (feature.properties && name) {
+      var body = "<b>Name:</b> " + name + "<br>";
+      body += "<b>Campus:</b> " + campus;
+      layer.bindPopup(body);
+    }
+  }
+
+  // ============
+  // map code
+  // ============
+
   var mymap = L.map("mapid").setView([37.505, -120.09], 6);
 
   var osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -36,26 +56,8 @@
     );
   });
 
-  function onEachFeatureHandler(feature, layer) {
-    var name =
-      feature.properties.Name ||
-      feature.properties.NAME ||
-      feature.properties.UNIT_NAME;
-    var campus =
-      feature.properties.Campus ||
-      feature.properties.CAMPUS ||
-      feature.properties.AGNCY_NAME;
-    if (feature.properties && name) {
-      var body = "<b>Name:</b> " + name + "<br>";
-      body += "<b>Campus:</b> " + campus;
-      layer.bindPopup(body);
-    }
-  }
-
   window.demomap.reserves.forEach(reserve => {
     var name = reserve.name;
-
-    console.log(name);
     var color = roadtrip_reserves.includes(name) ? "green" : "blue";
 
     L.geoJson(reserve, {
@@ -65,4 +67,14 @@
       onEachFeature: onEachFeatureHandler
     }).addTo(mymap);
   });
+
+  var reserveEls = document.querySelectorAll(".reserve");
+  if (reserveEls) {
+    reserveEls.forEach(el => {
+      el.addEventListener("click", e => {
+        e.preventDefault();
+        mymap.setView([e.target.dataset.lat, e.target.dataset.long], 12);
+      });
+    });
+  }
 })();
