@@ -1,17 +1,28 @@
 (function() {
-  var mymap = L.map("mapid").setView([40.505, -120.09], 5);
+  var roadtrip_reserves = [
+    "Bodega_Marine_Boundary_2", // 6
+    "missing Point Reyes", // 0
+    "Ano_Nuevo_Island_0", // 0
+    "Younger_Lagoon_Boundary_36", // 4
+    "Fort_Ord_Boundary_12", // 22
+    "Landels_Hill_Big_Creek_Boundary_20", // 0
+    "Kenneth_Norris_Rancho_Marino_Boundary_19", // 2
+    "Coil_Oil_Point_Boundary_8", // 0
+    "Carpinteria_Salt_Marsh_Boundary_6", // 5
+    "San_Joaquin_Marsh_Boundary_25", // 4
+    "Scripps_Boundary_27" // 5 samples
+  ];
 
-  L.tileLayer(
-    "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
-    {
-      maxZoom: 18,
-      attribution:
-        'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-        '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-        'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-      id: "mapbox.streets"
-    }
-  ).addTo(mymap);
+  var mymap = L.map("mapid").setView([37.505, -120.09], 6);
+
+  var osmUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+  var osmAttrib =
+    'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+
+  L.tileLayer(osmUrl, {
+    maxZoom: 18,
+    attribution: osmAttrib
+  }).addTo(mymap);
 
   window.demomap.sample_sites.forEach(point => {
     var circle = L.circle([point[1], point[2]], {
@@ -42,7 +53,15 @@
   }
 
   window.demomap.reserves.forEach(reserve => {
+    var name = reserve.name;
+
+    console.log(name);
+    var color = roadtrip_reserves.includes(name) ? "green" : "blue";
+
     L.geoJson(reserve, {
+      style: function() {
+        return { color: color };
+      },
       onEachFeature: onEachFeatureHandler
     }).addTo(mymap);
   });
